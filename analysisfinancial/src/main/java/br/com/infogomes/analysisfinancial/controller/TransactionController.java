@@ -3,7 +3,6 @@ package br.com.infogomes.analysisfinancial.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,30 +24,30 @@ public class TransactionController {
 
 	@Autowired
 	private TransactionService transactionService;
-	
+
 	@Autowired
 	private ImportationService importationService;
 
 	@GetMapping("/")
 	public String home(Model model) {
-		model.addAttribute("listImportation", new ArrayList<>());
+
+		List<Importation> listImportation = importationService.findAll();
+		model.addAttribute("listImportation", listImportation);
+
 		return "home";
 	}
 
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("formFile") MultipartFile file, Model model) throws IOException {
 
-		List<Transaction> listTransaction = transactionService.save(CSVUtil.parseToListTransaction(file.getInputStream()));
-		
-		LocalDate transactionDate = listTransaction.get(0).getTime().toLocalDate();
-		
-		importationService.save(new Importation(transactionDate,LocalDateTime.now()));
+		List<Transaction> listTransaction = transactionService
+				.save(CSVUtil.parseToListTransaction(file.getInputStream()));
 
-		List<Importation> listImportation = importationService.findAll();
-		
-		model.addAttribute("listImportation", listImportation);
-		
-		return "home";
+		LocalDate transactionDate = listTransaction.get(0).getTime().toLocalDate();
+
+		importationService.save(new Importation(transactionDate, LocalDateTime.now()));
+
+		return "redirect:/";
 	}
 
 }
