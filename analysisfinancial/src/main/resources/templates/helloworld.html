@@ -16,9 +16,12 @@
 <body>
 	<div class="container">
 		<h1 class="text-center">Importar Transações</h1>
+		<div th:if="${alert}" th:text="${alert}" class="alert alert-warning" role="alert">
+			A simple warning alert—check it out!
+		</div>
 		<form method="POST" enctype="multipart/form-data" action="/">
 			<div class="mb-3">
-				<label for="formFile" class="form-label">Selecione  arquivo para fazer upload</label>
+				<label for="formFile" class="form-label">Selecione arquivo para fazer upload</label>
 				<input class="form-control" type="file" id="formFile" name="formFile">
 			</div>
 			<button type="submit" class="btn btn-primary">Importar</button>

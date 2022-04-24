@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
@@ -58,19 +59,23 @@ public abstract class CSVUtil {
 		String destinationAgency = fields[4];
 		String destinationAccount = fields[5];
 
-		BigDecimal value = BigDecimal.valueOf(Double.valueOf(fields[6]));
+		BigDecimal value = fields[6].trim() != "" ? BigDecimal.valueOf(Double.valueOf(fields[6])) : null;
 
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-		LocalDateTime dateTime = LocalDateTime.parse(fields[7], formatter);
+		LocalDateTime dateTime = fields[7].trim() != "" ? LocalDateTime.parse(fields[7], formatter) : null;
 
 		return new Transaction(sourceBank, sourceAgency, sourceAccount, destinationBank, destinationAgency,
 				destinationAccount, value, dateTime);
 	}
 
+	public static List<Transaction> parseToListTransaction(List<String[]> arrayTransaction) {
+		return arrayTransaction.stream().map(fields -> parseToTransaction(fields)).collect(Collectors.toList());
+	}
+
 	public static boolean isEmpty(InputStream inputStream) {
 
 		try (CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
-			
+
 			return csvReader.readAll().size() <= 0;
 
 		} catch (IOException | CsvException e) {
