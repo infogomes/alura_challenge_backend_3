@@ -24,6 +24,11 @@ public class ImportationServiceImpl implements ImportationService{
 	public List<Importation> findAll() {
 		return repository.findAll();
 	}
+
+	@Override
+	public List<Importation> findByOrderByDateTransactionDesc() {
+		return repository.findByOrderByDateTransactionDesc();
+	}
 	
 	
 	

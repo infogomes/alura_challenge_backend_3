@@ -31,7 +31,7 @@ public class TransactionController {
 	@GetMapping("/")
 	public String home(Model model) {
 
-		List<Importation> listImportation = importationService.findAll();
+		List<Importation> listImportation = importationService.findByOrderByDateTransactionDesc();
 		model.addAttribute("listImportation", listImportation);
 
 		return "home";

@@ -9,5 +9,7 @@ public interface ImportationService {
 	Importation save(Importation importation);
 
 	List<Importation> findAll();
+	
+	List<Importation> findByOrderByDateTransactionDesc();
 
 }
