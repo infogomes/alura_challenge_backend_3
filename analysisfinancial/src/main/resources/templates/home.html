@@ -26,6 +26,25 @@
 			</div>
 			<button type="submit" class="btn btn-primary">Importar</button>
 		</form>
+		<h1 class="text-center">Importações Realizadas</h1>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th scope="col">DATA TRANSAÇÕES</th>
+					<th scope="col">DATA IMPORTAÇÃO</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${listImportation.empty}">
+					<td colspan="2"> Nenhuma importação realizada </td>
+				</tr>
+				<tr th:each="importation : ${listImportation}">
+				
+					<td><span th:text="${#temporals.format(importation.dateTransaction, 'dd/MM/yyyy')}"> 05/01/2022 </span></td>
+					<td><span th:text="${#temporals.format(importation.dateImportation, 'dd/MM/yyyy - HH:mm:ss')}"> 05/01/2022 - 16:22:19 </span></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 
