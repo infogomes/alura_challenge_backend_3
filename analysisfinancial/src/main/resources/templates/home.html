@@ -16,13 +16,35 @@
 <body>
 	<div class="container">
 		<h1 class="text-center">Importar Transações</h1>
+		<div th:if="${alert}" th:text="${alert}" class="alert alert-warning" role="alert">
+			A simple warning alert—check it out!
+		</div>
 		<form method="POST" enctype="multipart/form-data" action="/">
 			<div class="mb-3">
-				<label for="formFile" class="form-label">Selecione  arquivo para fazer upload</label>
+				<label for="formFile" class="form-label">Selecione arquivo para fazer upload</label>
 				<input class="form-control" type="file" id="formFile" name="formFile">
 			</div>
 			<button type="submit" class="btn btn-primary">Importar</button>
 		</form>
+		<h1 class="text-center">Importações Realizadas</h1>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th scope="col">DATA TRANSAÇÕES</th>
+					<th scope="col">DATA IMPORTAÇÃO</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${listImportation.empty}">
+					<td colspan="2"> Nenhuma importação realizada </td>
+				</tr>
+				<tr th:each="importation : ${listImportation}">
+				
+					<td><span th:text="${#temporals.format(importation.dateTransaction, 'dd/MM/yyyy')}"> 05/01/2022 </span></td>
+					<td><span th:text="${#temporals.format(importation.dateImportation, 'dd/MM/yyyy - HH:mm:ss')}"> 05/01/2022 - 16:22:19 </span></td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 
