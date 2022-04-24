@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import br.com.infogomes.analysisfinancial.entities.Transaction;
 import br.com.infogomes.analysisfinancial.repositories.TransactionRepository;
 import br.com.infogomes.analysisfinancial.services.TransactionService;
-import br.com.infogomes.analysisfinancial.util.CSVUtil;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -19,23 +19,27 @@ public class TransactionServiceImpl implements TransactionService {
 	@Autowired
 	private TransactionRepository repository;
 
-	public void save(List<String[]> transactions) {
+	public List<Transaction> save(List<Transaction> transactions) {
 
-		Transaction firstTransaction = CSVUtil.parseToTransaction(transactions.get(0));
-		LocalDate data = firstTransaction.getTime().toLocalDate();
-		List<Transaction> list = CSVUtil.parseToListTransaction(transactions);
+		if (transactions.size() <= 0)
+			throw new RuntimeException("O arquivo está vazio!");
 
-		boolean listByData = existsByTimeBetween(LocalDateTime.of(data, LocalTime.of(0, 0)),
-				LocalDateTime.of(data, LocalTime.MAX));
-		System.out.println(listByData);
-		
-		if(listByData)
+		LocalDate transactionDate = transactions.get(0).getTime().toLocalDate();
+
+		if (existsByTimeBetween(transactionDate))
 			throw new RuntimeException("Arquivo do dia já utilizado!");
-		list.stream().filter(trans -> trans.getTime().toLocalDate().equals(data))
-				.filter(trans -> !someFieldIsEmpty(trans)).forEach(t -> repository.save(t));
+
+		transactions = transactions.stream().filter(trans -> trans.getTime().toLocalDate().equals(transactionDate))
+				.filter(trans -> !someFieldIsEmpty(trans)).collect(Collectors.toList());
+
+		return repository.saveAll(transactions);
 
 	}
-	
+
+	private boolean existsByTimeBetween(LocalDate data) {
+		return existsByTimeBetween(LocalDateTime.of(data, LocalTime.of(0, 0)), LocalDateTime.of(data, LocalTime.MAX));
+	}
+
 	boolean existsByTimeBetween(LocalDateTime startDate, LocalDateTime endDate) {
 		return repository.existsByTimeBetween(startDate, endDate);
 	}

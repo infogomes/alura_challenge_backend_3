@@ -11,6 +11,6 @@ public class ControllerAdviceExceptionHandler extends ResponseEntityExceptionHan
 	@ExceptionHandler(value = RuntimeException.class)
 	protected String handleConflict(RuntimeException ex, Model model) {
 		model.addAttribute("alert", ex.getMessage());
-		return "helloworld";
+		return "home";
 	}
 }

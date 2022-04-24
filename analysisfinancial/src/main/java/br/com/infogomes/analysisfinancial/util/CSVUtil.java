@@ -32,26 +32,7 @@ public abstract class CSVUtil {
 		}
 	}
 
-	public static List<String[]> parseToTransactionList(InputStream inputStream) {
-
-		List<String[]> transactions = new ArrayList<>();
-
-		try (CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
-
-			String[] transactionLine;
-
-			while ((transactionLine = csvReader.readNext()) != null) {
-				transactions.add(transactionLine);
-			}
-
-		} catch (IOException | CsvValidationException e) {
-			// TODO: handle exception
-		}
-
-		return transactions;
-	}
-
-	public static Transaction parseToTransaction(String[] fields) {
+	private static Transaction parseToTransaction(String[] fields) {
 		String sourceBank = fields[0];
 		String sourceAgency = fields[1];
 		String sourceAccount = fields[2];
@@ -68,20 +49,21 @@ public abstract class CSVUtil {
 				destinationAccount, value, dateTime);
 	}
 
-	public static List<Transaction> parseToListTransaction(List<String[]> arrayTransaction) {
-		return arrayTransaction.stream().map(fields -> parseToTransaction(fields)).collect(Collectors.toList());
-	}
-
-	public static boolean isEmpty(InputStream inputStream) {
+	public static List<Transaction> parseToListTransaction(InputStream inputStream) {
 
 		try (CSVReader csvReader = new CSVReader(new InputStreamReader(inputStream))) {
 
-			return csvReader.readAll().size() <= 0;
+			List<String[]> listArrayFields = csvReader.readAll();
+
+			if (listArrayFields.size() <= 0)
+				return new ArrayList<>();
+
+			return listArrayFields.stream().map(fields -> parseToTransaction(fields)).collect(Collectors.toList());
 
 		} catch (IOException | CsvException e) {
-			// TODO: handle exception
+			throw new RuntimeException("Erro ao ler o arquivo!!");
 		}
 
-		return true;
 	}
+
 }

@@ -14,30 +14,22 @@ import br.com.infogomes.analysisfinancial.services.TransactionService;
 import br.com.infogomes.analysisfinancial.util.CSVUtil;
 
 @Controller
-public class FileController {
+public class TransactionController {
 
 	@Autowired
 	private TransactionService service;
 
 	@GetMapping("/")
-	public String helloWorld() {
-		return "helloworld";
+	public String home() {
+		return "home";
 	}
 
 	@PostMapping("/")
 	public String handleFileUpload(@RequestParam("formFile") MultipartFile file, Model model) throws IOException {
 
-		if (CSVUtil.isEmpty(file.getInputStream())) {
-			model.addAttribute("alert", "O arquivo está vazio!");
-		}
+		service.save(CSVUtil.parseToListTransaction(file.getInputStream()));
 
-		CSVUtil.readeCsv(file.getInputStream());
-
-		service.save(CSVUtil.parseToTransactionList(file.getInputStream()));
-
-		System.out.println("Nome do arquivo: " + file.getOriginalFilename() + " tamanho do arquivo: " + file.getSize());
-
-		return "helloworld";
+		return "home";
 	}
 
 }
