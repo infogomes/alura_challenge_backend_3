@@ -19,14 +19,14 @@
 		<!--<div th:if="${alert}" th:text="${alert}" class="alert alert-warning" role="alert">
 			A simple warning alert—check it out!
 		</div>-->
-		<form method="POST" action="user/adduser">
+		<form method="POST" action="#" th:action="@{/user/adduser}" th:object="${user}">
 			<div class="mb-3">
 				<label for="nome" class="form-label">Nome</label>
-				<input type="text" class="form-control" id="nome" placeholder="Nome">
+				<input type="text" class="form-control" id="nome" th:field="*{userName}" placeholder="Nome">
 			</div>
 			<div class="mb-3">
 				<label for="email" class="form-label">Email</label>
-				<input type="email" class="form-control" id="email" placeholder="name@example.com">
+				<input type="email" class="form-control" id="email" th:field="*{email}" placeholder="name@example.com">
 			</div>
 			<button type="submit" class="btn btn-primary">Cadastrar</button>
 		</form>
