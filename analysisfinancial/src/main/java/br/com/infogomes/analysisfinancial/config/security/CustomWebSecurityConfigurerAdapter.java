@@ -1,5 +1,6 @@
 package br.com.infogomes.analysisfinancial.config.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -7,35 +8,47 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import br.com.infogomes.analysisfinancial.entities.User;
+import br.com.infogomes.analysisfinancial.services.impl.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private UserServiceImpl service;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder; 
 
+	@Bean
+	public User configUser() {
+		return this.service.save(new User(null, "Admin", "admin@email.com.br", passwordEncoder.encode("123999")));
+	}
+	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("thiago").password(passwordEncoder().encode("thiago"))
-				.authorities("ROLE_USER");
+		auth.userDetailsService(service).passwordEncoder(passwordEncoder);
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-			.antMatchers("/securityNone").permitAll()
+			.antMatchers("/login").permitAll()
 			.anyRequest().authenticated()
 		.and()
-			.httpBasic();
+			.formLogin(form -> form.loginPage("/login").permitAll());
+		  //.loginPage("/login.html")
+	      //.loginProcessingUrl("/perform_login")
+	      //.defaultSuccessUrl("/homepage.html",true)
+	      //.failureUrl("/login.html?error=true")
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/h2-console/**");
 	}
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+	
 }
