@@ -16,18 +16,19 @@ import br.com.infogomes.analysisfinancial.services.impl.UserServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
-	
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
 	@Autowired
 	private UserServiceImpl service;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder; 
 
 	@Bean
 	public User configUser() {
-		return this.service.save(new User(null, "Admin", "admin@email.com.br", passwordEncoder.encode("123999")));
+		return this.service.save(new User(null, "Admin", "admin@email.com.br", "123999"));
+
 	}
-	
+
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(service).passwordEncoder(passwordEncoder);
@@ -35,20 +36,17 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-			.antMatchers("/login").permitAll()
-			.anyRequest().authenticated()
-		.and()
-			.formLogin(form -> form.loginPage("/login").permitAll());
-		  //.loginPage("/login.html")
-	      //.loginProcessingUrl("/perform_login")
-	      //.defaultSuccessUrl("/homepage.html",true)
-	      //.failureUrl("/login.html?error=true")
+		http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and()
+				.formLogin(form -> form.loginPage("/login").permitAll());
+		// .loginPage("/login.html")
+		// .loginProcessingUrl("/perform_login")
+		// .defaultSuccessUrl("/homepage.html",true)
+		// .failureUrl("/login.html?error=true")
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().antMatchers("/h2-console/**");
 	}
-	
+
 }

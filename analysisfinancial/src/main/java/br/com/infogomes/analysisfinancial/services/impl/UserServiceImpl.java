@@ -2,14 +2,12 @@ package br.com.infogomes.analysisfinancial.services.impl;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.com.infogomes.analysisfinancial.entities.User;
@@ -20,18 +18,10 @@ import br.com.infogomes.analysisfinancial.services.UserService;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Autowired
-	private UserRepository repository;
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder; 
+	private UserRepository repository; 
 
 	@Override
 	public User save(User user) {
-		if(Optional.ofNullable(user.getPassword()).isEmpty()) {
-			Random rnd = new Random();
-			String password = String.valueOf(rnd.nextInt(999999));
-			user.setPassword(passwordEncoder.encode(password));
-		}
 		return repository.save(user);
 	}
 

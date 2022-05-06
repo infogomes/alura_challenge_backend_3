@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import br.com.infogomes.analysisfinancial.dto.UserDTO;
 import br.com.infogomes.analysisfinancial.entities.User;
 import br.com.infogomes.analysisfinancial.services.UserService;
+import br.com.infogomes.analysisfinancial.services.facade.UserServiceFacade;
 
 @Controller
 @RequestMapping(path = "user")
@@ -24,6 +25,9 @@ public class UserController {
 
 	@Autowired
 	private UserService service;
+	
+	@Autowired
+	private UserServiceFacade serviceFacade;
 
 	@GetMapping()
 	public String listUser(Model model) {
@@ -42,9 +46,9 @@ public class UserController {
 	@PostMapping("/adduser")
 	public String saveUser(@Valid @ModelAttribute UserDTO userDTO, BindingResult result, Model model) {
 
-		User user = service.save(dtoToUser(userDTO));
+		User user = serviceFacade.save(dtoToUser(userDTO));
 
-		model.addAttribute("user", user);
+		model.addAttribute("user", userToDTO(user));
 		return "redirect:/user";
 	}
 
