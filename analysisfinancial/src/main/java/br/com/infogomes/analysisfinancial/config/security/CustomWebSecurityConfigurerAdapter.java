@@ -36,7 +36,10 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().antMatchers("/login").permitAll().anyRequest().authenticated().and()
+		http.authorizeRequests()
+		.antMatchers("/login").permitAll()
+		.antMatchers("/user/adduser").permitAll()
+		.anyRequest().authenticated().and()
 				.formLogin(form -> form.loginPage("/login").permitAll());
 		// .loginPage("/login.html")
 		// .loginProcessingUrl("/perform_login")

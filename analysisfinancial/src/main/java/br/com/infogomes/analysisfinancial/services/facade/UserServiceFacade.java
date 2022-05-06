@@ -35,7 +35,7 @@ public class UserServiceFacade {
 		user.setPassword(passwordEncoder.encode(password));
 		User savedUser = service.save(user);
 
-		emailService.send(user.getEmail(), user.getUserName(), password);
+		emailService.send(user.getEmail(), "E-mail cadastro", password);
 		
 		return savedUser; 
 	}
