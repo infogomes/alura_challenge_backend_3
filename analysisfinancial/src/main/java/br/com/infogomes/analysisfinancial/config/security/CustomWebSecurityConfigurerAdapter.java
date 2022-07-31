@@ -25,7 +25,7 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 
 	@Bean
 	public User configUser() {
-		return this.service.save(new User(null, "Admin", "admin@email.com.br", "123999"));
+		return this.service.save(new User(null, "Admin", "admin@email.com.br", this.passwordEncoder.encode("123999")));
 
 	}
 
@@ -40,7 +40,10 @@ public class CustomWebSecurityConfigurerAdapter extends WebSecurityConfigurerAda
 		.antMatchers("/login").permitAll()
 		.antMatchers("/user/adduser").permitAll()
 		.anyRequest().authenticated().and()
-				.formLogin(form -> form.loginPage("/login").permitAll());
+				.formLogin(form -> form.loginPage("/login").permitAll())
+				.logout()
+				.logoutUrl("/logout")
+				.logoutSuccessUrl("/login");
 		// .loginPage("/login.html")
 		// .loginProcessingUrl("/perform_login")
 		// .defaultSuccessUrl("/homepage.html",true)
