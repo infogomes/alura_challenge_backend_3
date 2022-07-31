@@ -14,6 +14,31 @@
 </head>
 
 <body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">Navbar</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav">
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/}">IMPORTAÇÕES</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" th:href="@{/user}">USUÁRIO</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="javascript: document.logoutForm.submit()"> SAIR</a>
+						<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+							<input hidden type="submit" value="Sign Out" />
+						</form>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 	<div class="container">
 		<h1 class="text-center">Importar Transações</h1>
 		<div th:if="${alert}" th:text="${alert}" class="alert alert-warning" role="alert">
@@ -39,9 +64,11 @@
 					<td colspan="2"> Nenhuma importação realizada </td>
 				</tr>
 				<tr th:each="importation : ${listImportation}">
-				
-					<td><span th:text="${#temporals.format(importation.dateTransaction, 'dd/MM/yyyy')}"> 05/01/2022 </span></td>
-					<td><span th:text="${#temporals.format(importation.dateImportation, 'dd/MM/yyyy - HH:mm:ss')}"> 05/01/2022 - 16:22:19 </span></td>
+
+					<td><span th:text="${#temporals.format(importation.dateTransaction, 'dd/MM/yyyy')}"> 05/01/2022
+						</span></td>
+					<td><span th:text="${#temporals.format(importation.dateImportation, 'dd/MM/yyyy - HH:mm:ss')}">
+							05/01/2022 - 16:22:19 </span></td>
 				</tr>
 			</tbody>
 		</table>
